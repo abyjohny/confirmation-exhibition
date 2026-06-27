@@ -1,0 +1,482 @@
+/* Custom resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Disable standard scrollbars */
+    background-color: #050505;
+    font-family: 'Inter', sans-serif;
+    color: #fffdf9;
+    cursor: none; /* Hide default browser cursor */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Canvas fits the screen */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#exhibition-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Custom Cursor: Lumen */
+#lumen-pointer {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: #fffdf9;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #ffd700, 0 0 20px #ffb400;
+}
+
+#lumen-glow {
+    position: fixed;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+}
+
+/* Text overlays system */
+#text-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none; /* Allow pointer events to fall through by default */
+}
+
+.overlay-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+    visibility: hidden;
+}
+
+.overlay-state.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Cinematic Composition Grid Layouts (Strict Protected Zones) */
+.split-frame {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.frame-left {
+    width: 35%; /* Fixed width for typography zone */
+    max-width: 520px;
+    min-width: 420px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 6%;
+    padding-right: 2%;
+    z-index: 11;
+}
+
+.frame-right {
+    width: 65%; /* Rest of the screen remains empty for the canvas artwork */
+    height: 100%;
+    pointer-events: none;
+}
+
+.centered-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Common Typography Layout */
+.state-indicator {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6em;
+    color: rgba(255, 215, 0, 0.35);
+    margin-bottom: 24px;
+    display: block;
+}
+
+/* Fading Divider: Terminating elegantly in negative space */
+.editorial-divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.45), rgba(255, 215, 0, 0));
+    margin-bottom: 30px;
+}
+
+.split-frame .editorial-divider {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Intro & Concept Layout */
+.intro-block, .scripture-block {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.intro-title, .concept-title {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    color: #fffdf9;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.12);
+    line-height: 1.35;
+}
+
+.intro-text, .concept-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255, 253, 249, 0.65);
+    margin-top: 15px;
+}
+
+.highlight-gold {
+    color: #ffd700;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+    letter-spacing: 0.05em;
+}
+
+/* State 4 Spotlight layout (Lower Third Composition) */
+.spotlight-block {
+    position: absolute;
+    bottom: 12%; /* Generous breathing space below centered dove */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    max-width: 650px;
+    padding: 0 40px;
+}
+
+.scripture-text {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    line-height: 1.6;
+    font-weight: 300;
+    color: #fffdf9;
+    text-shadow: 0 0 12px rgba(255, 253, 249, 0.25), 0 0 25px rgba(255, 215, 0, 0.12);
+}
+
+/* State 5: The Seven Gifts Panel */
+.gifts-block {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 40px;
+    pointer-events: auto; /* Enable mouse events so row elements can be clicked/hovered */
+}
+
+.gifts-block .state-indicator {
+    text-align: center;
+}
+
+.gifts-block .editorial-divider {
+    background: linear-gradient(to right, rgba(255, 215, 0, 0), rgba(255, 215, 0, 0.45) 50%, rgba(255, 215, 0, 0));
+    margin: 0 auto 30px auto;
+}
+
+.gifts-headline {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: #fffdf9;
+    text-align: center;
+    text-shadow: 0 0 12px rgba(255,255,255,0.08);
+}
+
+.gifts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 900px;
+    margin: 45px auto 0 auto;
+}
+
+/* Gift nodes transition spreading out from center */
+.gift-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 110px;
+    opacity: 0;
+    transform: translate(var(--offset-x), 0) scale(0);
+    transition: transform 1.8s cubic-bezier(0.2, 1, 0.25, 1), opacity 1.8s ease;
+    cursor: pointer;
+}
+
+/* Spread active transition */
+.overlay-state.active .gift-node {
+    opacity: 0.35;
+    transform: translate(0, 0) scale(1);
+}
+
+.overlay-state.active .gift-node:hover,
+.overlay-state.active .gift-node.active {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.gift-num {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffd700;
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px rgba(255,215,0,0.3);
+}
+
+.gift-icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    transition: border 0.5s, background-color 0.5s, box-shadow 0.5s;
+}
+
+.gift-node:hover .gift-icon-container, .gift-node.active .gift-icon-container {
+    border: 1px solid #ffd700;
+    background-color: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), inset 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.gift-svg {
+    width: 26px;
+    height: 26px;
+    color: rgba(255, 253, 249, 0.65);
+    transition: color 0.5s, transform 0.5s;
+}
+
+.gift-node:hover .gift-svg, .gift-node.active .gift-svg {
+    color: #ffd700;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+}
+
+.gift-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    line-height: 1.3;
+    transition: color 0.5s;
+}
+
+.gift-node:hover .gift-name, .gift-node.active .gift-name {
+    color: #fffdf9;
+}
+
+#gift-description-tray {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 45px;
+    text-align: center;
+    min-height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+
+#gift-desc-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255, 253, 249, 0.65);
+    transition: opacity 0.3s ease;
+}
+
+/* State 6: Revelation block */
+.revelation-block {
+    text-align: center;
+    max-width: 800px;
+    padding: 0 40px;
+}
+
+.revelation-headline {
+    font-family: 'Cinzel', serif;
+    font-size: 34px;
+    line-height: 1.55;
+    font-weight: 300;
+    color: #fffdf9;
+    margin-bottom: 12px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.15);
+}
+
+.revelation-accent {
+    font-family: 'Cinzel', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: #ffd700;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 25px rgba(255, 215, 0, 0.45);
+    margin-bottom: 30px;
+}
+
+.revelation-divider {
+    width: 60px;
+    height: 1px;
+    background-color: rgba(255, 215, 0, 0.25);
+    margin: 0 auto 30px auto;
+}
+
+.revelation-footer {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255, 253, 249, 0.55);
+}
+
+/* Scroll HUD Progress Ring */
+#scroll-hud {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.progress-ring {
+    position: absolute;
+    transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+    stroke-dasharray: 163.36; /* 2 * PI * r (r=26) */
+    stroke-dashoffset: 163.36;
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+#scroll-state-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffd700;
+    letter-spacing: 0.15em;
+    margin-left: 2px; /* Visual center adjustment */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+    .split-frame {
+        flex-direction: column;
+    }
+    
+    .frame-left {
+        width: 100%;
+        max-width: 100%;
+        height: 45%;
+        padding-left: 6%;
+        padding-right: 6%;
+        padding-top: 8%;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .split-frame .editorial-divider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .intro-block, .scripture-block {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .frame-right {
+        width: 100%;
+        height: 55%;
+    }
+    
+    .gifts-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px 25px;
+    }
+    
+    .gift-node {
+        width: 90px;
+        transform: translate(0, 0) scale(1) !important; /* Disable dynamic translations on mobile */
+    }
+    
+    .gift-icon-container {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .gift-svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .gifts-headline {
+        font-size: 16px;
+    }
+    
+    .revelation-headline {
+        font-size: 26px;
+    }
+    
+    .revelation-accent {
+        font-size: 30px;
+    }
+}

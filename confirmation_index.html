@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Kaleidoscope of Confirmation</title>
+    <!-- Google Fonts: Cinzel for classical headers, Inter for wide-spaced details -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="confirmation_index.css">
+</head>
+<body>
+
+    <!-- GPU-Accelerated SVG Displacement/Turbulence Filters -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" width="0" height="0">
+        <defs>
+            <filter id="liquid-oil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Interactive Custom Cursor (Lumen) -->
+    <div id="lumen-pointer"></div>
+    <div id="lumen-glow"></div>
+
+    <!-- Main Rendering Canvas (Image assets and animations rendered together) -->
+    <div id="canvas-container">
+        <canvas id="exhibition-canvas"></canvas>
+    </div>
+
+    <!-- Cinematic Typography Overlays (Asymmetrically Composed) -->
+    <div id="text-overlays">
+        <!-- State 1: Dormancy (Expectant Silence) -->
+        <div class="overlay-state split-frame" id="state-1-dormancy">
+            <div class="frame-left">
+                <div class="intro-block">
+                    <span class="state-indicator">STATE 01 // DORMANCY</span>
+                    <h1 class="intro-title">THE INSTRUMENT</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="intro-text">Scroll to awaken the lens.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Left empty for the floating cylinder drawn on canvas -->
+        </div>
+
+        <!-- State 2: Awakening (The Optical Concept) -->
+        <div class="overlay-state split-frame" id="state-2-awakening">
+            <div class="frame-left">
+                <div class="scripture-block">
+                    <span class="state-indicator">STATE 02 // AWAKENING</span>
+                    <h1 class="concept-title">KALEIDOSCOPE</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="concept-desc">a device through which we look at things from <span class="highlight-gold">many different angles</span> often with <span class="highlight-gold">SPECTACULAR RESULTS</span>.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Cylinder on right, shooting light rays directly to the title on left -->
+        </div>
+
+        <!-- State 3: Recognition (The Soul Eye) -->
+        <div class="overlay-state split-frame" id="state-3-recognition">
+            <div class="frame-left">
+                <div class="scripture-block">
+                    <span class="state-indicator">STATE 03 // RECOGNITION</span>
+                    <h1 class="concept-title">SOUL EYE DO SCOPE</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="concept-desc">a way of seeing life and the world through the eyes of the <span class="highlight-gold">soul</span>, guided by the wisdom and light of the <span class="highlight-gold">Holy Spirit</span>.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Glowing iris lens on right, light rays bouncing to text on left -->
+        </div>
+
+        <!-- State 4: Alignment (The Spirit Descends) -->
+        <div class="overlay-state centered-frame" id="state-4-alignment">
+            <!-- Dove centered, scripture in bottom negative space spotlight -->
+            <div class="spotlight-block">
+                <span class="state-indicator">STATE 04 // ALIGNMENT</span>
+                <p class="scripture-text">The Spirit descends to align the fragments of our sight.</p>
+            </div>
+        </div>
+
+        <!-- State 5: Transformation (The Seven Gifts Birth) -->
+        <div class="overlay-state centered-frame" id="state-5-transformation">
+            <div class="gifts-block">
+                <span class="state-indicator">STATE 05 // TRANSFORMATION</span>
+                <h2 class="gifts-headline">WHAT ARE THE GIFTS OF THE HOLY SPIRIT?</h2>
+                <div class="editorial-divider"></div>
+                
+                <!-- Horizontal Row where nodes spread outward dynamically from center -->
+                <div class="gifts-row">
+                    <!-- Gift 1: Wisdom -->
+                    <div class="gift-node" data-gift="1" style="--offset-x: 330px;" id="node-wisdom">
+                        <div class="gift-num">1</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3.5A2.5 2.5 0 0 1 6.5 1H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Wisdom</div>
+                    </div>
+
+                    <!-- Gift 2: Understanding -->
+                    <div class="gift-node" data-gift="2" style="--offset-x: 220px;" id="node-understanding">
+                        <div class="gift-num">2</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M9 21h6M12 18v3M12 2v2M4.22 4.22l1.42 1.42M1.5 12h2M19.78 4.22l-1.42 1.42M20.5 12h2M12 6a6 6 0 0 0-6 6c0 2.22 1.2 4.15 3 5.19V18h6v-0.81c1.8-1.04 3-2.97 3-5.19a6 6 0 0 0-6-6z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Understanding</div>
+                    </div>
+
+                    <!-- Gift 3: Right Judgement -->
+                    <div class="gift-node" data-gift="3" style="--offset-x: 110px;" id="node-judgement">
+                        <div class="gift-num">3</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 3v18M12 5l-8 2M12 5l8 2M4 7v10M20 7v10M2 17h4M18 17h4M12 21H6M12 21h6" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Right Judgement</div>
+                    </div>
+
+                    <!-- Gift 4: Courage -->
+                    <div class="gift-node" data-gift="4" style="--offset-x: 0px;" id="node-courage">
+                        <div class="gift-num">4</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Courage</div>
+                    </div>
+
+                    <!-- Gift 5: Knowledge -->
+                    <div class="gift-node" data-gift="5" style="--offset-x: -110px;" id="node-knowledge">
+                        <div class="gift-num">5</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 22V14M12 14c-2-1-4-1-5-3s0-4 2-4M12 14c2-1 4-1 5-3s0-4-2-4M12 10V5M12 5c-1-1-2.5-1-3.5 0s0 2 1.5 2M12 5c1-1 2.5-1 3.5 0s0 2-1.5 2" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Knowledge</div>
+                    </div>
+
+                    <!-- Gift 6: Piety -->
+                    <div class="gift-node" data-gift="6" style="--offset-x: -220px;" id="node-piety">
+                        <div class="gift-num">6</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 3v18M8 8h8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Piety</div>
+                    </div>
+
+                    <!-- Gift 7: Fear of the Lord -->
+                    <div class="gift-node" data-gift="7" style="--offset-x: -330px;" id="node-fear">
+                        <div class="gift-num">7</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 1.5 1 2.5 2 3.5s2.5 2 2.5 4.5a5.5 5.5 0 0 1-11 0c0-1.25.5-2 1-3 .5 1 1 2 1 3z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Fear of the Lord</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Description Tray -->
+                <div id="gift-description-tray">
+                    <p id="gift-desc-text">Hover or click a gift's icon above to reveal its vision-transforming power.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 6: Revelation (The Final Climax) -->
+        <div class="overlay-state centered-frame" id="state-6-revelation">
+            <div class="revelation-block">
+                <span class="state-indicator">STATE 06 // REVELATION</span>
+                <h1 class="revelation-headline">Confirmation changes the way we see the world.</h1>
+                <h1 class="revelation-accent">Not the world itself.</h1>
+                <div class="revelation-divider"></div>
+                <p class="revelation-footer">You are the light. The lens of grace is complete.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Scroll Indicator (Progress Ring) -->
+    <div id="scroll-hud">
+        <svg class="progress-ring" width="60" height="60">
+            <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="transparent" r="26" cx="30" cy="30"/>
+            <circle class="progress-ring__circle" stroke="#ffd700" stroke-width="2" fill="transparent" r="26" cx="30" cy="30"/>
+        </svg>
+        <span id="scroll-state-num">01</span>
+    </div>
+
+    <script src="confirmation_index.js"></script>
+</body>
+</html>

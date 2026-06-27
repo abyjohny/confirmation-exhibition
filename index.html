@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Kaleidoscope of Confirmation</title>
+    <!-- Google Fonts: Cinzel for classical headers, Inter for wide-spaced details -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+/* Custom resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Disable standard scrollbars */
+    background-color: #050505;
+    font-family: 'Inter', sans-serif;
+    color: #fffdf9;
+    cursor: none; /* Hide default browser cursor */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Canvas fits the screen */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#exhibition-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Custom Cursor: Lumen */
+#lumen-pointer {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: #fffdf9;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #ffd700, 0 0 20px #ffb400;
+}
+
+#lumen-glow {
+    position: fixed;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+}
+
+/* Text overlays system */
+#text-overlays {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none; /* Allow pointer events to fall through by default */
+}
+
+.overlay-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+    visibility: hidden;
+}
+
+.overlay-state.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Cinematic Composition Grid Layouts (Strict Protected Zones) */
+.split-frame {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.frame-left {
+    width: 35%; /* Fixed width for typography zone */
+    max-width: 520px;
+    min-width: 420px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 6%;
+    padding-right: 2%;
+    z-index: 11;
+}
+
+.frame-right {
+    width: 65%; /* Rest of the screen remains empty for the canvas artwork */
+    height: 100%;
+    pointer-events: none;
+}
+
+.centered-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Common Typography Layout */
+.state-indicator {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6em;
+    color: rgba(255, 215, 0, 0.35);
+    margin-bottom: 24px;
+    display: block;
+}
+
+/* Fading Divider: Terminating elegantly in negative space */
+.editorial-divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.45), rgba(255, 215, 0, 0));
+    margin-bottom: 30px;
+}
+
+.split-frame .editorial-divider {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Intro & Concept Layout */
+.intro-block, .scripture-block {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.intro-title, .concept-title {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    color: #fffdf9;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.12);
+    line-height: 1.35;
+}
+
+.intro-text, .concept-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255, 253, 249, 0.65);
+    margin-top: 15px;
+}
+
+.highlight-gold {
+    color: #ffd700;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+    letter-spacing: 0.05em;
+}
+
+/* State 4 Spotlight layout (Lower Third Composition) */
+.spotlight-block {
+    position: absolute;
+    bottom: 12%; /* Generous breathing space below centered dove */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    max-width: 650px;
+    padding: 0 40px;
+}
+
+.scripture-text {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    line-height: 1.6;
+    font-weight: 300;
+    color: #fffdf9;
+    text-shadow: 0 0 12px rgba(255, 253, 249, 0.25), 0 0 25px rgba(255, 215, 0, 0.12);
+}
+
+/* State 5: The Seven Gifts Panel */
+.gifts-block {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 40px;
+    pointer-events: auto; /* Enable mouse events so row elements can be clicked/hovered */
+}
+
+.gifts-block .state-indicator {
+    text-align: center;
+}
+
+.gifts-block .editorial-divider {
+    background: linear-gradient(to right, rgba(255, 215, 0, 0), rgba(255, 215, 0, 0.45) 50%, rgba(255, 215, 0, 0));
+    margin: 0 auto 30px auto;
+}
+
+.gifts-headline {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    color: #fffdf9;
+    text-align: center;
+    text-shadow: 0 0 12px rgba(255,255,255,0.08);
+}
+
+.gifts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 900px;
+    margin: 45px auto 0 auto;
+}
+
+/* Gift nodes transition spreading out from center */
+.gift-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 110px;
+    opacity: 0;
+    transform: translate(var(--offset-x), 0) scale(0);
+    transition: transform 1.8s cubic-bezier(0.2, 1, 0.25, 1), opacity 1.8s ease;
+    cursor: pointer;
+}
+
+/* Spread active transition */
+.overlay-state.active .gift-node {
+    opacity: 0.35;
+    transform: translate(0, 0) scale(1);
+}
+
+.overlay-state.active .gift-node:hover,
+.overlay-state.active .gift-node.active {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.gift-num {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffd700;
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px rgba(255,215,0,0.3);
+}
+
+.gift-icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    transition: border 0.5s, background-color 0.5s, box-shadow 0.5s;
+}
+
+.gift-node:hover .gift-icon-container, .gift-node.active .gift-icon-container {
+    border: 1px solid #ffd700;
+    background-color: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2), inset 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.gift-svg {
+    width: 26px;
+    height: 26px;
+    color: rgba(255, 253, 249, 0.65);
+    transition: color 0.5s, transform 0.5s;
+}
+
+.gift-node:hover .gift-svg, .gift-node.active .gift-svg {
+    color: #ffd700;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+}
+
+.gift-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    line-height: 1.3;
+    transition: color 0.5s;
+}
+
+.gift-node:hover .gift-name, .gift-node.active .gift-name {
+    color: #fffdf9;
+}
+
+#gift-description-tray {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 45px;
+    text-align: center;
+    min-height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+
+#gift-desc-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255, 253, 249, 0.65);
+    transition: opacity 0.3s ease;
+}
+
+/* State 6: Revelation block */
+.revelation-block {
+    text-align: center;
+    max-width: 800px;
+    padding: 0 40px;
+}
+
+.revelation-headline {
+    font-family: 'Cinzel', serif;
+    font-size: 34px;
+    line-height: 1.55;
+    font-weight: 300;
+    color: #fffdf9;
+    margin-bottom: 12px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.15);
+}
+
+.revelation-accent {
+    font-family: 'Cinzel', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: #ffd700;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 25px rgba(255, 215, 0, 0.45);
+    margin-bottom: 30px;
+}
+
+.revelation-divider {
+    width: 60px;
+    height: 1px;
+    background-color: rgba(255, 215, 0, 0.25);
+    margin: 0 auto 30px auto;
+}
+
+.revelation-footer {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255, 253, 249, 0.55);
+}
+
+/* Scroll HUD Progress Ring */
+#scroll-hud {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.progress-ring {
+    position: absolute;
+    transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+    stroke-dasharray: 163.36; /* 2 * PI * r (r=26) */
+    stroke-dashoffset: 163.36;
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+#scroll-state-num {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffd700;
+    letter-spacing: 0.15em;
+    margin-left: 2px; /* Visual center adjustment */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+    .split-frame {
+        flex-direction: column;
+    }
+    
+    .frame-left {
+        width: 100%;
+        max-width: 100%;
+        height: 45%;
+        padding-left: 6%;
+        padding-right: 6%;
+        padding-top: 8%;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .split-frame .editorial-divider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .intro-block, .scripture-block {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .frame-right {
+        width: 100%;
+        height: 55%;
+    }
+    
+    .gifts-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px 25px;
+    }
+    
+    .gift-node {
+        width: 90px;
+        transform: translate(0, 0) scale(1) !important; /* Disable dynamic translations on mobile */
+    }
+    
+    .gift-icon-container {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .gift-svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .gifts-headline {
+        font-size: 16px;
+    }
+    
+    .revelation-headline {
+        font-size: 26px;
+    }
+    
+    .revelation-accent {
+        font-size: 30px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+    <!-- GPU-Accelerated SVG Displacement/Turbulence Filters -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" width="0" height="0">
+        <defs>
+            <filter id="liquid-oil" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Interactive Custom Cursor (Lumen) -->
+    <div id="lumen-pointer"></div>
+    <div id="lumen-glow"></div>
+
+    <!-- Main Rendering Canvas (Image assets and animations rendered together) -->
+    <div id="canvas-container">
+        <canvas id="exhibition-canvas"></canvas>
+    </div>
+
+    <!-- Cinematic Typography Overlays (Asymmetrically Composed) -->
+    <div id="text-overlays">
+        <!-- State 1: Dormancy (Expectant Silence) -->
+        <div class="overlay-state split-frame" id="state-1-dormancy">
+            <div class="frame-left">
+                <div class="intro-block">
+                    <span class="state-indicator">STATE 01 // DORMANCY</span>
+                    <h1 class="intro-title">THE INSTRUMENT</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="intro-text">Scroll to awaken the lens.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Left empty for the floating cylinder drawn on canvas -->
+        </div>
+
+        <!-- State 2: Awakening (The Optical Concept) -->
+        <div class="overlay-state split-frame" id="state-2-awakening">
+            <div class="frame-left">
+                <div class="scripture-block">
+                    <span class="state-indicator">STATE 02 // AWAKENING</span>
+                    <h1 class="concept-title">KALEIDOSCOPE</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="concept-desc">a device through which we look at things from <span class="highlight-gold">many different angles</span> often with <span class="highlight-gold">SPECTACULAR RESULTS</span>.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Cylinder on right, shooting light rays directly to the title on left -->
+        </div>
+
+        <!-- State 3: Recognition (The Soul Eye) -->
+        <div class="overlay-state split-frame" id="state-3-recognition">
+            <div class="frame-left">
+                <div class="scripture-block">
+                    <span class="state-indicator">STATE 03 // RECOGNITION</span>
+                    <h1 class="concept-title">SOUL EYE DO SCOPE</h1>
+                    <div class="editorial-divider"></div>
+                    <p class="concept-desc">a way of seeing life and the world through the eyes of the <span class="highlight-gold">soul</span>, guided by the wisdom and light of the <span class="highlight-gold">Holy Spirit</span>.</p>
+                </div>
+            </div>
+            <div class="frame-right"></div> <!-- Glowing iris lens on right, light rays bouncing to text on left -->
+        </div>
+
+        <!-- State 4: Alignment (The Spirit Descends) -->
+        <div class="overlay-state centered-frame" id="state-4-alignment">
+            <!-- Dove centered, scripture in bottom negative space spotlight -->
+            <div class="spotlight-block">
+                <span class="state-indicator">STATE 04 // ALIGNMENT</span>
+                <p class="scripture-text">The Spirit descends to align the fragments of our sight.</p>
+            </div>
+        </div>
+
+        <!-- State 5: Transformation (The Seven Gifts Birth) -->
+        <div class="overlay-state centered-frame" id="state-5-transformation">
+            <div class="gifts-block">
+                <span class="state-indicator">STATE 05 // TRANSFORMATION</span>
+                <h2 class="gifts-headline">WHAT ARE THE GIFTS OF THE HOLY SPIRIT?</h2>
+                <div class="editorial-divider"></div>
+                
+                <!-- Horizontal Row where nodes spread outward dynamically from center -->
+                <div class="gifts-row">
+                    <!-- Gift 1: Wisdom -->
+                    <div class="gift-node" data-gift="1" style="--offset-x: 330px;" id="node-wisdom">
+                        <div class="gift-num">1</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3.5A2.5 2.5 0 0 1 6.5 1H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Wisdom</div>
+                    </div>
+
+                    <!-- Gift 2: Understanding -->
+                    <div class="gift-node" data-gift="2" style="--offset-x: 220px;" id="node-understanding">
+                        <div class="gift-num">2</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M9 21h6M12 18v3M12 2v2M4.22 4.22l1.42 1.42M1.5 12h2M19.78 4.22l-1.42 1.42M20.5 12h2M12 6a6 6 0 0 0-6 6c0 2.22 1.2 4.15 3 5.19V18h6v-0.81c1.8-1.04 3-2.97 3-5.19a6 6 0 0 0-6-6z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Understanding</div>
+                    </div>
+
+                    <!-- Gift 3: Right Judgement -->
+                    <div class="gift-node" data-gift="3" style="--offset-x: 110px;" id="node-judgement">
+                        <div class="gift-num">3</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 3v18M12 5l-8 2M12 5l8 2M4 7v10M20 7v10M2 17h4M18 17h4M12 21H6M12 21h6" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Right Judgement</div>
+                    </div>
+
+                    <!-- Gift 4: Courage -->
+                    <div class="gift-node" data-gift="4" style="--offset-x: 0px;" id="node-courage">
+                        <div class="gift-num">4</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Courage</div>
+                    </div>
+
+                    <!-- Gift 5: Knowledge -->
+                    <div class="gift-node" data-gift="5" style="--offset-x: -110px;" id="node-knowledge">
+                        <div class="gift-num">5</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 22V14M12 14c-2-1-4-1-5-3s0-4 2-4M12 14c2-1 4-1 5-3s0-4-2-4M12 10V5M12 5c-1-1-2.5-1-3.5 0s0 2 1.5 2M12 5c1-1 2.5-1 3.5 0s0 2-1.5 2" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Knowledge</div>
+                    </div>
+
+                    <!-- Gift 6: Piety -->
+                    <div class="gift-node" data-gift="6" style="--offset-x: -220px;" id="node-piety">
+                        <div class="gift-num">6</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M12 3v18M8 8h8" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Piety</div>
+                    </div>
+
+                    <!-- Gift 7: Fear of the Lord -->
+                    <div class="gift-node" data-gift="7" style="--offset-x: -330px;" id="node-fear">
+                        <div class="gift-num">7</div>
+                        <div class="gift-icon-container">
+                            <svg class="gift-svg" viewBox="0 0 24 24">
+                                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 1.5 1 2.5 2 3.5s2.5 2 2.5 4.5a5.5 5.5 0 0 1-11 0c0-1.25.5-2 1-3 .5 1 1 2 1 3z" stroke="currentColor" fill="none" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="gift-name">Fear of the Lord</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Description Tray -->
+                <div id="gift-description-tray">
+                    <p id="gift-desc-text">Hover or click a gift's icon above to reveal its vision-transforming power.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 6: Revelation (The Final Climax) -->
+        <div class="overlay-state centered-frame" id="state-6-revelation">
+            <div class="revelation-block">
+                <span class="state-indicator">STATE 06 // REVELATION</span>
+                <h1 class="revelation-headline">Confirmation changes the way we see the world.</h1>
+                <h1 class="revelation-accent">Not the world itself.</h1>
+                <div class="revelation-divider"></div>
+                <p class="revelation-footer">You are the light. The lens of grace is complete.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Scroll Indicator (Progress Ring) -->
+    <div id="scroll-hud">
+        <svg class="progress-ring" width="60" height="60">
+            <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="transparent" r="26" cx="30" cy="30"/>
+            <circle class="progress-ring__circle" stroke="#ffd700" stroke-width="2" fill="transparent" r="26" cx="30" cy="30"/>
+        </svg>
+        <span id="scroll-state-num">01</span>
+    </div>
+
+    <script>
+/**
+ * The Kaleidoscope of Confirmation - Experience Engine
+ * Art-directed coordinates, protected composition zones, and ray-tracing bounds.
+ */
+
+(function() {
+    // --- Configuration & State ---
+    const CONFIG = {
+        maxProgress: 5.0,        // Clamped scroll progress (0.0 to 5.0)
+        lerpFactor: 0.05,        // Inertial weight for smoothing
+        particleCount: 80,       // Number of shards in State 5
+        rayCount: 8              // Number of reflected rays in State 3
+    };
+
+    let state = {
+        scrollProgressTarget: 0,
+        scrollProgress: 0,
+        targetMouseX: 0,         // Normalized mouse coords (-1 to 1)
+        targetMouseY: 0,
+        mouseX: 0,               // Smoothed mouse coords
+        mouseY: 0,
+        clientX: window.innerWidth / 2, // Screen space coords for custom cursor
+        clientY: window.innerHeight / 2,
+        currentClientX: window.innerWidth / 2,
+        currentClientY: window.innerHeight / 2,
+        time: 0,
+        activeState: 1
+    };
+
+    // --- Load Exhibit Images in JS ---
+    const images = {
+        kaleidoscope: new Image(),
+        soulEye: new Image(),
+        dove: new Image()
+    };
+    images.kaleidoscope.src = 'exhibit_kaleidoscope.png';
+    images.soulEye.src = 'exhibit_soul_eye.png';
+    images.dove.src = 'exhibit_dove.png';
+
+    // --- DOM Elements ---
+    const canvas = document.getElementById('exhibition-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Create Offscreen Buffer Canvas for the Source Slice (60 degrees)
+    const offscreenCanvas = document.createElement('canvas');
+    const octx = offscreenCanvas.getContext('2d');
+
+    // Reuseable temp canvas for radial image masking
+    const tempCanvas = document.createElement('canvas');
+    const tctx = tempCanvas.getContext('2d');
+
+    const lumenPointer = document.getElementById('lumen-pointer');
+    const lumenGlow = document.getElementById('lumen-glow');
+    const hudCircle = document.querySelector('.progress-ring__circle');
+    const hudNum = document.getElementById('scroll-state-num');
+    const overlayStates = document.querySelectorAll('.overlay-state');
+    const displacementMap = document.querySelector('feDisplacementMap');
+    const turbulence = document.querySelector('feTurbulence');
+
+    // Gift nodes and descriptions
+    const giftNodes = document.querySelectorAll('.gift-node');
+    const giftDescText = document.getElementById('gift-desc-text');
+
+    const GIFT_DESCRIPTIONS = {
+        "1": "Allows us to see things as God sees them, understanding the true value of life's experiences.",
+        "2": "Gives us a deeper insight into the truths of faith, helping us to grasp the meaning of God's Word.",
+        "3": "Helps us to make correct, moral choices in everyday situations, guided by the Holy Spirit.",
+        "4": "Strengthens us to stand up for our faith and face difficulties with fortitude and trust in God.",
+        "5": "Enables us to recognize the hand of God at work in our lives and the beauty of creation.",
+        "6": "Inspires us to love God as our Father and show deep reverence for all sacred things and others.",
+        "7": "Fills us with a sacred awe and wonder of God's presence, leading us to respect His love and avoid sin."
+    };
+
+    // --- Helper Functions ---
+    const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
+    
+    function getPlateauOpacity(val, start, peakStart, peakEnd, end) {
+        if (val < start || val > end) return 0;
+        if (val >= peakStart && val <= peakEnd) return 1;
+        if (val < peakStart) {
+            return (val - start) / (peakStart - start);
+        } else {
+            return (end - val) / (end - peakEnd);
+        }
+    }
+    
+    // --- Canvas Masked Image Drawer ---
+    function drawMaskedImage(targetCtx, img, x, y, width, height, opacity, rotateAngle = 0) {
+        if (!img.complete || img.naturalWidth === 0 || opacity <= 0) return;
+        
+        // Resize temp canvas if dimensions changed
+        if (tempCanvas.width !== width || tempCanvas.height !== height) {
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+        }
+        
+        tctx.clearRect(0, 0, width, height);
+        tctx.drawImage(img, 0, 0, width, height);
+        
+        // Create radial gradient mask
+        const cx = width / 2;
+        const cy = height / 2;
+        const maskRadius = Math.min(width, height) / 2;
+        const mask = tctx.createRadialGradient(cx, cy, maskRadius * 0.25, cx, cy, maskRadius * 0.95);
+        mask.addColorStop(0, 'rgba(0,0,0,1)');
+        mask.addColorStop(0.7, 'rgba(0,0,0,0.85)');
+        mask.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        // Apply mask
+        tctx.globalCompositeOperation = 'destination-in';
+        tctx.fillStyle = mask;
+        tctx.fillRect(0, 0, width, height);
+        tctx.globalCompositeOperation = 'source-over';
+        
+        // Draw centered on target coordinates with rotation and opacity
+        targetCtx.save();
+        targetCtx.globalAlpha = opacity;
+        targetCtx.translate(x, y);
+        if (rotateAngle !== 0) {
+            targetCtx.rotate(rotateAngle);
+        }
+        targetCtx.drawImage(tempCanvas, -width / 2, -height / 2);
+        targetCtx.restore();
+    }
+
+    // --- HUD & Overlay Updates ---
+    function updateHUD() {
+        const circumference = 163.36;
+        const progressFraction = state.scrollProgress / CONFIG.maxProgress;
+        const offset = circumference - progressFraction * circumference;
+        hudCircle.style.strokeDashoffset = offset;
+        
+        const newState = Math.min(6, Math.max(1, Math.floor(state.scrollProgress + 0.5) + 1));
+        if (state.activeState !== newState) {
+            state.activeState = newState;
+            hudNum.innerText = "0" + newState;
+            
+            // Toggle overlay transitions
+            overlayStates.forEach((overlay, idx) => {
+                if (idx + 1 === newState) {
+                    overlay.classList.add('active');
+                } else {
+                    overlay.classList.remove('active');
+                }
+            });
+
+            if (newState === 5) {
+                // Trigger sequential node hover glow
+                giftNodes.forEach((node, idx) => {
+                    setTimeout(() => {
+                        if (state.activeState === 5) node.classList.add('active');
+                    }, idx * 120);
+                });
+            } else {
+                giftNodes.forEach(n => n.classList.remove('active'));
+            }
+        }
+    }
+
+    // --- Interactive Gift Node Actions ---
+    giftNodes.forEach(node => {
+        const giftId = node.getAttribute('data-gift');
+        
+        const showDesc = () => {
+            giftNodes.forEach(n => n.classList.remove('active'));
+            node.classList.add('active');
+            
+            giftDescText.style.opacity = 0;
+            setTimeout(() => {
+                giftDescText.innerText = GIFT_DESCRIPTIONS[giftId];
+                giftDescText.style.opacity = 1;
+            }, 200);
+        };
+
+        node.addEventListener('mouseenter', showDesc);
+        node.addEventListener('click', showDesc);
+    });
+
+    document.querySelector('.gifts-row').addEventListener('mouseleave', () => {
+        giftNodes.forEach(n => n.classList.remove('active'));
+        giftDescText.style.opacity = 0;
+        setTimeout(() => {
+            giftDescText.innerText = "Hover or click a gift's icon above to reveal its vision-transforming power.";
+            giftDescText.style.opacity = 1;
+        }, 200);
+    });
+
+    // --- State 3 Polar Bouncing Rays Setup ---
+    const rays = [];
+    for (let i = 0; i < CONFIG.rayCount; i++) {
+        rays.push({
+            r: 20 + Math.random() * 60,
+            phi: (Math.random() * 0.4 - 0.2), // radians, within [-30 deg, 30 deg]
+            vr: 1.2 + Math.random() * 1.5,
+            vphi: (Math.random() * 0.012 - 0.006),
+            color: i % 2 === 0 ? 'rgba(255, 215, 0, 0.5)' : 'rgba(255, 253, 249, 0.35)',
+            history: []
+        });
+    }
+
+    // --- State 5 Symmetrical Floating Shards Setup ---
+    const shards = [];
+    function generateShards() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const minDim = Math.min(width, height);
+        
+        shards.length = 0;
+        for (let i = 0; i < CONFIG.particleCount; i++) {
+            const ring = i % 8;
+            const radius = (ring + 1) * (minDim * 0.045);
+            const maxAngle = (25 * Math.PI) / 180;
+            const step = (maxAngle * 2) / (CONFIG.particleCount / 8);
+            const indexInRing = Math.floor(i / 8);
+            const angle = -maxAngle + (indexInRing * step) + (ring * 0.015);
+            
+            shards.push({
+                targetX: radius * Math.cos(angle),
+                targetY: radius * Math.sin(angle),
+                size: 2 + Math.random() * 4,
+                color: ring % 2 === 0 ? 'rgba(255, 215, 0, 0.55)' : 'rgba(255, 253, 249, 0.4)',
+                angleOffset: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    // --- Window Resize ---
+    function resize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        
+        canvas.width = w;
+        canvas.height = h;
+        offscreenCanvas.width = w;
+        offscreenCanvas.height = h;
+        
+        generateShards();
+    }
+    window.addEventListener('resize', resize);
+
+    // --- Input Bindings ---
+    window.addEventListener('wheel', (e) => {
+        state.scrollProgressTarget += e.deltaY * 0.001;
+        state.scrollProgressTarget = Math.max(0, Math.min(CONFIG.maxProgress, state.scrollProgressTarget));
+    }, { passive: true });
+
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        const deltaY = touchStartY - e.touches[0].clientY;
+        touchStartY = e.touches[0].clientY;
+        state.scrollProgressTarget += deltaY * 0.005;
+        state.scrollProgressTarget = Math.max(0, Math.min(CONFIG.maxProgress, state.scrollProgressTarget));
+    }, { passive: true });
+
+    window.addEventListener('mousemove', (e) => {
+        state.clientX = e.clientX;
+        state.clientY = e.clientY;
+        state.targetMouseX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+        state.targetMouseY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+    }, { passive: true });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+            state.scrollProgressTarget = Math.min(CONFIG.maxProgress, state.scrollProgressTarget + 0.25);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            state.scrollProgressTarget = Math.max(0, state.scrollProgressTarget - 0.25);
+        }
+    });
+
+    // --- Offscreen Source Slice (Symmetry element) ---
+    function drawWedgeSource(cx, cy, maxR, imgW) {
+        octx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+        octx.save();
+        octx.translate(cx, cy);
+
+        // State 1 & 2: Kaleidoscope Overlay Reflections
+        if (state.scrollProgress < 2.0) {
+            let opacity = 0;
+            if (state.scrollProgress <= 1.0) {
+                opacity = state.scrollProgress * 0.35;
+            } else {
+                opacity = (2.0 - state.scrollProgress) * 0.35;
+            }
+
+            if (opacity > 0) {
+                octx.save();
+                octx.rotate(state.mouseX * 0.12);
+                octx.strokeStyle = `rgba(255, 215, 0, ${opacity * 0.25})`;
+                octx.lineWidth = 1;
+                for (let r = 0; r < 5; r++) {
+                    octx.beginPath();
+                    octx.arc(0, 0, 40 * (r + 1), -Math.PI / 6, Math.PI / 6);
+                    octx.stroke();
+                }
+                octx.restore();
+            }
+        }
+
+        // State 3: Bouncing Rays (Constrained to the inside of the Soul Eye iris halo)
+        if (state.scrollProgress > 1.0 && state.scrollProgress < 3.0) {
+            let opacity = 0;
+            if (state.scrollProgress <= 2.0) {
+                opacity = state.scrollProgress - 1.0;
+            } else {
+                opacity = 3.0 - state.scrollProgress;
+            }
+
+            const activeLimitRadius = imgW * 0.45; // Boundaries terminate exactly on the iris edge
+
+            rays.forEach(p => {
+                p.r += p.vr;
+                p.phi += p.vphi + (state.mouseY * 0.0005);
+                
+                const limit = Math.PI / 6;
+                if (p.phi > limit) {
+                    p.phi = Math.PI / 3 - p.phi;
+                    p.vphi = -p.vphi;
+                } else if (p.phi < -limit) {
+                    p.phi = -Math.PI / 3 - p.phi;
+                    p.vphi = -p.vphi;
+                }
+                
+                // Wrap and reset inside if it escapes the iris boundary
+                if (p.r > activeLimitRadius) {
+                    p.r = 15;
+                    p.history = [];
+                }
+                
+                const rx = p.r * Math.cos(p.phi);
+                const ry = p.r * Math.sin(p.phi);
+                
+                p.history.push({ x: rx, y: ry });
+                if (p.history.length > 20) p.history.shift();
+                
+                if (p.history.length > 1) {
+                    octx.beginPath();
+                    octx.moveTo(p.history[0].x, p.history[0].y);
+                    for (let h = 1; h < p.history.length; h++) {
+                        octx.lineTo(p.history[h].x, p.history[h].y);
+                    }
+                    octx.strokeStyle = p.color.replace(')', `, ${opacity * 0.65})`).replace('rgb', 'rgba');
+                    octx.lineWidth = 1;
+                    octx.stroke();
+                }
+            });
+        }
+
+        // State 5: Symmetrical floating shards
+        if (state.scrollProgress > 3.5 && state.scrollProgress < 5.0) {
+            const opacity = getPlateauOpacity(state.scrollProgress, 3.5, 3.7, 4.2, 4.45);
+
+            shards.forEach((p, idx) => {
+                let x = p.targetX;
+                let y = p.targetY;
+                
+                const waveSpeed = 0.003;
+                const waveX = Math.sin(state.time * waveSpeed + p.targetY * 0.02 + state.mouseX * 1.5) * 15;
+                const waveY = Math.cos(state.time * waveSpeed + p.targetX * 0.02 + state.mouseY * 1.5) * 15;
+                x += waveX;
+                y += waveY;
+
+                octx.save();
+                octx.translate(x, y);
+                octx.rotate((state.time * 0.00012) + p.angleOffset);
+                octx.fillStyle = p.color.replace(')', `, ${opacity * 0.45})`).replace('rgb', 'rgba');
+                
+                octx.beginPath();
+                const size = p.size;
+                if (idx % 2 === 0) {
+                    octx.moveTo(0, -size);
+                    octx.lineTo(size, size);
+                    octx.lineTo(-size, size);
+                } else {
+                    octx.moveTo(0, -size);
+                    octx.lineTo(size * 0.6, 0);
+                    octx.lineTo(0, size);
+                    octx.lineTo(-size * 0.6, 0);
+                }
+                octx.closePath();
+                octx.fill();
+                octx.restore();
+            });
+        }
+
+        octx.restore();
+    }
+
+    // --- Main Renderer Loop ---
+    function render(timestamp) {
+        state.time = timestamp;
+        
+        // Interpolate Scroll and Mouse
+        state.scrollProgress = lerp(state.scrollProgress, state.scrollProgressTarget, CONFIG.lerpFactor);
+        state.mouseX = lerp(state.mouseX, state.targetMouseX, CONFIG.lerpFactor);
+        state.mouseY = lerp(state.mouseY, state.targetMouseY, CONFIG.lerpFactor);
+        
+        state.currentClientX = lerp(state.currentClientX, state.clientX, 0.15);
+        state.currentClientY = lerp(state.currentClientY, state.clientY, 0.15);
+        
+        // Position custom cursor
+        lumenPointer.style.left = `${state.currentClientX}px`;
+        lumenPointer.style.top = `${state.currentClientY}px`;
+        lumenGlow.style.left = `${state.currentClientX}px`;
+        lumenGlow.style.top = `${state.currentClientY}px`;
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        const maxR = Math.max(w, h) * 1.3;
+
+        // Size metrics for the visuals
+        const cylinderW = Math.min(w, h) * 0.68;
+        const irisW = Math.min(w, h) * 0.60;
+
+        // Draw offscreen wedge source (using iris width for radial ray bounds)
+        drawWedgeSource(cx, cy, maxR, irisW);
+
+        // --- BACKGROUND AND COLOR SPILL FADES ---
+        ctx.fillStyle = '#050505';
+        ctx.fillRect(0, 0, w, h);
+
+        // State 4 Dove Golden/Amber spill (constrained to center sphere)
+        if (state.scrollProgress > 2.5 && state.scrollProgress < 4.5) {
+            const doveProgress = Math.max(0, 1 - Math.abs(state.scrollProgress - 3.5));
+            const goldSpill = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.6);
+            goldSpill.addColorStop(0, `rgba(255, 170, 0, ${0.11 * doveProgress})`);
+            goldSpill.addColorStop(0.5, `rgba(255, 110, 0, ${0.03 * doveProgress})`);
+            goldSpill.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = goldSpill;
+            ctx.fillRect(0, 0, w, h);
+        }
+
+        // State 5 Crimson spill (behind gifts grid)
+        if (state.scrollProgress > 3.5 && state.scrollProgress < 5.0) {
+            const crimsonProgress = Math.max(0, 1 - Math.abs(state.scrollProgress - 4.5) * 2);
+            const crimsonSpill = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.65);
+            crimsonSpill.addColorStop(0, `rgba(139, 0, 0, ${0.07 * crimsonProgress})`);
+            crimsonSpill.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = crimsonSpill;
+            ctx.fillRect(0, 0, w, h);
+        }
+
+        // State 6 Celestial Horizon
+        let state6Opacity = 0;
+        if (state.scrollProgress > 4.5) {
+            state6Opacity = (state.scrollProgress - 4.5) / 0.5;
+        }
+
+        if (state6Opacity > 0) {
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#020205');
+            grad.addColorStop(0.6, '#08060f');
+            grad.addColorStop(1, '#1b1220');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            for (let i = 0; i < 20; i++) {
+                const starX = (Math.sin(i * 123) * 0.5 + 0.5) * w;
+                const starY = (Math.cos(i * 456) * 0.5 + 0.5) * h * 0.8;
+                const pulse = 0.5 + 0.5 * Math.sin(state.time * 0.0008 + i);
+                ctx.beginPath();
+                ctx.arc(starX, starY, 1 * pulse, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            const horizonGrad = ctx.createRadialGradient(cx, h * 0.9, 0, cx, h * 0.9, w * 0.5);
+            horizonGrad.addColorStop(0, `rgba(255, 215, 0, ${0.16 * state6Opacity})`);
+            horizonGrad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+            ctx.fillStyle = horizonGrad;
+            ctx.beginPath();
+            ctx.ellipse(cx, h * 0.9, w * 0.7, h * 0.25, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // --- DRAW MASKED ARTWORK ON CANVAS IN PROTECTED ZONES ---
+
+        // State 1 & 2: Kaleidoscope Cylinder (Asymmetrical on Right 65%)
+        if (state.scrollProgress < 2.5) {
+            const opacity = getPlateauOpacity(state.scrollProgress, 0.0, 0.3, 1.2, 1.4) * 0.95;
+
+            if (opacity > 0) {
+                // Coordinate shifted further right to prevent text overlaps
+                const imgX = w * 0.74 + state.mouseX * 25;
+                const imgY = cy + state.mouseY * 20;
+                const scaleVal = 0.96 + (opacity / 0.95) * 0.04;
+                const tiltAngle = -0.05 + state.mouseX * 0.04;
+                
+                drawMaskedImage(ctx, images.kaleidoscope, imgX, imgY, cylinderW * scaleVal, cylinderW * scaleVal, opacity, tiltAngle);
+
+                // Volumetric beam sweeps across but dissolves completely before hitting the left column
+                if (state.scrollProgress > 0.8) {
+                    const beamOpacity = Math.max(0, 1 - Math.abs(state.scrollProgress - 1.25) * 1.5) * opacity;
+                    if (beamOpacity > 0) {
+                        ctx.save();
+                        ctx.globalCompositeOperation = 'screen';
+                        const startX = imgX - cylinderW * 0.25;
+                        const startY = imgY;
+                        
+                        // Fades out at w * 0.45 (safe margin of empty space before left column text at 35%)
+                        const endX = w * 0.45;
+                        const endY = cy;
+
+                        const beamGrad = ctx.createLinearGradient(startX, startY, endX, endY);
+                        beamGrad.addColorStop(0, `rgba(255, 215, 0, ${0.42 * beamOpacity})`);
+                        beamGrad.addColorStop(0.4, `rgba(255, 180, 0, ${0.15 * beamOpacity})`);
+                        beamGrad.addColorStop(1, 'rgba(255, 180, 0, 0)'); // 100% transparent
+                        
+                        ctx.strokeStyle = beamGrad;
+                        ctx.lineWidth = 35;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(startX, startY);
+                        ctx.lineTo(endX, endY);
+                        ctx.stroke();
+
+                        ctx.lineWidth = 4;
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 * beamOpacity})`;
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+        }
+
+        // State 3: Soul Eye Lens (Asymmetrical on Right 65%)
+        if (state.scrollProgress > 1.5 && state.scrollProgress < 3.5) {
+            const opacity = getPlateauOpacity(state.scrollProgress, 1.6, 1.8, 2.2, 2.4);
+
+            if (opacity > 0) {
+                const imgX = w * 0.74 + state.mouseX * 20;
+                const imgY = cy + state.mouseY * 15;
+                const scaleVal = 0.96 + opacity * 0.04;
+                const spinAngle = state.time * 0.00015;
+                
+                drawMaskedImage(ctx, images.soulEye, imgX, imgY, irisW * scaleVal, irisW * scaleVal, opacity, spinAngle);
+            }
+        }
+
+        // State 4: Holy Spirit Dove (Centered composition with Lower Third Text)
+        if (state.scrollProgress > 2.5 && state.scrollProgress < 4.5) {
+            const opacity = getPlateauOpacity(state.scrollProgress, 2.6, 2.8, 3.2, 3.45);
+
+            if (opacity > 0) {
+                const imgW = Math.min(w, h) * 0.85;
+                const imgX = cx + state.mouseX * 35;
+                const imgY = cy * 0.88 + state.mouseY * 25; // Shifted slightly higher to create negative space for bottom text
+                const scaleVal = 0.96 + opacity * 0.04;
+                
+                drawMaskedImage(ctx, images.dove, imgX, imgY, imgW * scaleVal, imgW * scaleVal, opacity);
+
+                // Volumetric rays shooting outward from dove core
+                ctx.save();
+                ctx.translate(imgX, imgY);
+                ctx.rotate(state.time * 0.00008);
+                ctx.globalCompositeOperation = 'screen';
+                
+                const rayCount = 18;
+                for (let r = 0; r < rayCount; r++) {
+                    const angle = (r * Math.PI * 2) / rayCount;
+                    const rGrad = ctx.createLinearGradient(0, 0, maxR * Math.cos(angle), maxR * Math.sin(angle));
+                    rGrad.addColorStop(0, `rgba(255, 215, 0, ${0.15 * opacity})`);
+                    rGrad.addColorStop(0.4, `rgba(255, 180, 0, ${0.06 * opacity})`);
+                    rGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    
+                    ctx.fillStyle = rGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(maxR * Math.cos(angle - 0.07), maxR * Math.sin(angle - 0.07));
+                    ctx.lineTo(maxR * Math.cos(angle + 0.07), maxR * Math.sin(angle + 0.07));
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // --- DRAW SYMMETRICAL KALEIDOSCOPE REFLECTIONS ---
+        ctx.save();
+        
+        // State 5 SVG displacement shader activate
+        if (state.scrollProgress > 4.0 && state.scrollProgress < 5.0) {
+            const meltVal = state.scrollProgress - 4.0;
+            canvas.style.filter = `url(#liquid-oil)`;
+            if (displacementMap) {
+                displacementMap.setAttribute('scale', (meltVal * 35).toFixed(2));
+            }
+            if (turbulence) {
+                const freq = 0.015 + 0.004 * Math.sin(state.time * 0.0005);
+                turbulence.setAttribute('baseFrequency', freq.toFixed(5));
+            }
+        } else {
+            canvas.style.filter = 'none';
+        }
+
+        const scaleVal = 1.0 + Math.sin(state.time * 0.00045) * 0.022;
+        ctx.globalAlpha = 1 - state6Opacity;
+
+        // Position center of reflections according to current state layout
+        let rx = cx;
+        if (state.scrollProgress < 3.5) {
+            rx = w * 0.74; // Centered on the right-hand visual exhibits
+        }
+
+        for (let i = 0; i < 6; i++) {
+            ctx.save();
+            ctx.translate(rx, cy);
+            
+            ctx.scale(scaleVal, scaleVal);
+            ctx.rotate(i * Math.PI / 3);
+            
+            if (i % 2 === 1) {
+                ctx.scale(1, -1);
+            }
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(maxR * Math.cos(-Math.PI / 6), maxR * Math.sin(-Math.PI / 6));
+            ctx.lineTo(maxR * Math.cos(Math.PI / 6), maxR * Math.sin(Math.PI / 6));
+            ctx.closePath();
+            ctx.clip();
+            
+            ctx.drawImage(offscreenCanvas, -rx, -cy);
+            ctx.restore();
+        }
+        ctx.restore();
+
+        // --- STATE 5: DYNAMIC CONNECTOR LIGHT STREAMS ---
+        if (state.activeState === 5) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            
+            const giftsOpacity = getPlateauOpacity(state.scrollProgress, 3.5, 3.7, 4.2, 4.45);
+            
+            giftNodes.forEach((node, idx) => {
+                // Terminate exactly at the top border of the icon circle container
+                const iconContainer = node.querySelector('.gift-icon-container');
+                if (iconContainer) {
+                    const rect = iconContainer.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) {
+                        const targetX = rect.left + rect.width / 2;
+                        const targetY = rect.top; // Stop exactly at top border, avoiding visual overlap
+                        
+                        const originX = cx + state.mouseX * 30;
+                        const originY = cy * 0.45 + state.mouseY * 20; // raised origin center
+                        
+                        // Draw thin golden connector line
+                        const streamGrad = ctx.createLinearGradient(originX, originY, targetX, targetY);
+                        streamGrad.addColorStop(0, `rgba(255, 215, 0, ${0.30 * giftsOpacity})`);
+                        streamGrad.addColorStop(0.8, `rgba(255, 180, 0, ${0.10 * giftsOpacity})`);
+                        streamGrad.addColorStop(1, 'rgba(255, 180, 0, 0)');
+                        
+                        ctx.strokeStyle = streamGrad;
+                        ctx.lineWidth = 1.5; // Thin elegant thread
+                        ctx.beginPath();
+                        ctx.moveTo(originX, originY);
+                        ctx.lineTo(targetX, targetY);
+                        ctx.stroke();
+
+                        // Glowing spark traveling down the line
+                        const travelSpeed = 0.002;
+                        const progress = (state.time * travelSpeed + idx * 0.14) % 1.0;
+                        const sparkX = lerp(originX, targetX, progress);
+                        const sparkY = lerp(originY, targetY, progress);
+                        
+                        const sparkGlow = ctx.createRadialGradient(sparkX, sparkY, 0, sparkX, sparkY, 10);
+                        sparkGlow.addColorStop(0, `rgba(255, 255, 255, ${0.80 * giftsOpacity})`);
+                        sparkGlow.addColorStop(0.3, `rgba(255, 215, 0, ${0.5 * giftsOpacity})`);
+                        sparkGlow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                        
+                        ctx.fillStyle = sparkGlow;
+                        ctx.beginPath();
+                        ctx.arc(sparkX, sparkY, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            });
+            ctx.restore();
+        }
+
+        // State 6: Draw rotating overlay grid ("The lens of grace")
+        if (state6Opacity > 0) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(state.time * 0.00004);
+            ctx.strokeStyle = `rgba(255, 253, 249, ${0.06 * state6Opacity})`;
+            ctx.lineWidth = 0.5;
+            
+            ctx.beginPath();
+            for (let a = 0; a < 12; a++) {
+                const angle = (a * Math.PI) / 6;
+                ctx.moveTo(0, 0);
+                ctx.lineTo(maxR * Math.cos(angle), maxR * Math.sin(angle));
+            }
+            for (let r = 0; r < 4; r++) {
+                ctx.arc(0, 0, 120 * (r + 1), 0, Math.PI * 2);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Update progress indicators and triggers
+        updateHUD();
+
+        requestAnimationFrame(render);
+    }
+
+    // --- Initialization ---
+    resize();
+    requestAnimationFrame(render);
+
+})();
+
+</script>
+</body>
+</html>
