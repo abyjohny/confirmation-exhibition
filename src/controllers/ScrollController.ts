@@ -50,11 +50,11 @@ export class ScrollController {
       }
     });
 
-    // Animate scrollProgress from 0.0 to 5.0 linearly with scroll
+    // Animate scrollProgress from 0.0 to 6.0 linearly with scroll
     mainTimeline.to(state, {
-      scrollProgress: 5.0,
+      scrollProgress: 6.0,
       ease: 'none',
-      duration: 5.0
+      duration: 6.0
     }, 0);
 
     // 2. Animate Shader parameters along the timeline
@@ -113,8 +113,8 @@ export class ScrollController {
           mainTimeline.to(text, { y: -15, opacity: 0, ease: 'power2.inOut', duration: 0.3 }, 0.5);
         }
 
-      } else if (idx < 5) {
-        // States 2 to 5: Fade in before their peak, and fade out after their peak
+      } else if (idx < 6) {
+        // States 2 to 6: Fade in before their peak, and fade out after their peak
         const startOffset = idx * 1.0 - 0.5; // e.g. 0.5 for state 2
         const endOffset = idx * 1.0 + 0.2;   // e.g. 1.2 for state 2
 
@@ -153,7 +153,7 @@ export class ScrollController {
         }
 
       } else {
-        // State 6: Revelation (Fades in near end and remains active)
+        // State 7: Revelation (Fades in near end and remains active)
         gsap.set(overlay, { opacity: 0, visibility: 'hidden' });
         if (title) gsap.set(title, { y: 20, opacity: 0, letterSpacing: '0.15em' });
         if (text) gsap.set(text, { y: 15, opacity: 0 });
@@ -164,13 +164,13 @@ export class ScrollController {
           visibility: 'visible',
           ease: 'power2.out',
           duration: 0.3
-        }, 4.5);
+        }, 5.5);
 
         if (title) {
-          mainTimeline.to(title, { y: 0, opacity: 1, letterSpacing: '0.22em', ease: 'power3.out', duration: 0.35 }, 4.5);
+          mainTimeline.to(title, { y: 0, opacity: 1, letterSpacing: '0.22em', ease: 'power3.out', duration: 0.35 }, 5.5);
         }
         if (text) {
-          mainTimeline.to(text, { y: 0, opacity: 1, ease: 'power3.out', duration: 0.35 }, 4.6);
+          mainTimeline.to(text, { y: 0, opacity: 1, ease: 'power3.out', duration: 0.35 }, 5.6);
         }
       }
     });

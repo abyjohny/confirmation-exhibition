@@ -612,19 +612,95 @@ export class Renderer {
 
 
 
-    // --- STATE 6: CELESTIAL STARS & ROTATING LENS GRID ---
+    // --- STATE 6: WISDOM (THE INTEGRATION PRISM & CONTEMPLATIVE TWILIGHT) ---
     let state6Opacity = 0;
-    if (state.scrollProgress > 4.5) {
-      state6Opacity = (state.scrollProgress - 4.5) / 0.5;
+    if (state.scrollProgress > 4.5 && state.scrollProgress < 5.5) {
+      state6Opacity = 1.0 - Math.abs(state.scrollProgress - 5.0) * 2.0;
+      state6Opacity = Math.max(0.0, Math.min(1.0, state6Opacity));
     }
 
     if (state6Opacity > 0) {
+      let bgMat = Matrix3.projection(w, h);
+      bgMat = Matrix3.translate(bgMat, cx, cy);
+      bgMat = Matrix3.scale(bgMat, w, h);
+      // Twilight violet background
+      this.drawSolidQuad(bgMat, [0.05, 0.03, 0.13, state6Opacity * 0.85]);
+
+      // Wisdom Orb Source
+      const wisdomX = w * 0.74 + state.mouseX * 15;
+      const wisdomY = cy + state.mouseY * 12;
+      const pulseSize = irisW * 0.35 * (1.0 + Math.sin(state.time * 0.0012) * 0.03);
+
+      let orbMat = Matrix3.projection(w, h);
+      orbMat = Matrix3.translate(orbMat, wisdomX, wisdomY);
+      orbMat = Matrix3.scale(orbMat, pulseSize, pulseSize);
+      // Outer amber glow
+      this.drawQuad(this.whiteTexture, orbMat, state6Opacity * 0.8, [1.0, 0.73, 0.2, 1.0], 1.0, 0.45);
+      
+      // Inner white core
+      let coreMat = Matrix3.projection(w, h);
+      coreMat = Matrix3.translate(coreMat, wisdomX, wisdomY);
+      coreMat = Matrix3.scale(coreMat, pulseSize * 0.4, pulseSize * 0.4);
+      this.drawQuad(this.whiteTexture, coreMat, state6Opacity * 0.95, [1.0, 1.0, 1.0, 1.0], 1.0, 0.45);
+
+      // Triquetra / Vesica piscis trinity rings
+      const ringCount = 3;
+      const spinAngle = state.time * 0.0003;
+      const hoverAngleX = state.mouseX * 0.05;
+      const hoverAngleY = state.mouseY * 0.05;
+
+      for (let i = 0; i < ringCount; i++) {
+        const angle = (i * Math.PI * 2) / ringCount + spinAngle;
+        const ringDist = pulseSize * 0.32;
+        const ringX = wisdomX + ringDist * Math.cos(angle) + hoverAngleX * 10;
+        const ringY = wisdomY + ringDist * Math.sin(angle) + hoverAngleY * 10;
+
+        let ringMat = Matrix3.projection(w, h);
+        ringMat = Matrix3.translate(ringMat, ringX, ringY);
+        ringMat = Matrix3.rotate(ringMat, angle + Math.PI / 2);
+        ringMat = Matrix3.scale(ringMat, pulseSize * 0.7, pulseSize * 1.5);
+
+        this.drawQuad(this.whiteTexture, ringMat, state6Opacity * 0.22, [1.0, 0.84, 0.0, 1.0], 1.0, 0.48);
+      }
+
+      // Radiating rays bending towards user pointer
+      const wisdomRayCount = 8;
+      const raySpin = state.time * 0.0001;
+      for (let r = 0; r < wisdomRayCount; r++) {
+        const baseAngle = (r * Math.PI * 2) / wisdomRayCount + raySpin;
+        const targetAngle = Math.atan2(wisdomY + state.mouseY * 200 - wisdomY, wisdomX + state.mouseX * 200 - wisdomX);
+        const diff = targetAngle - baseAngle;
+        const bend = Math.sin(diff) * 0.08 * Math.max(0.0, 1.0 - Math.abs(state.mouseX) - Math.abs(state.mouseY));
+        const finalAngle = baseAngle + bend;
+
+        const endX = wisdomX + maxR * 0.8 * Math.cos(finalAngle);
+        const endY = wisdomY + maxR * 0.8 * Math.sin(finalAngle);
+
+        this.drawVolumetricBeam(
+          wisdomX,
+          wisdomY,
+          endX,
+          endY,
+          12,
+          state6Opacity * 0.28,
+          [1.0, 0.84, 0.0, 1.0]
+        );
+      }
+    }
+
+    // --- STATE 7: CELESTIAL STARS & ROTATING LENS GRID ---
+    let state7Opacity = 0;
+    if (state.scrollProgress > 5.5) {
+      state7Opacity = (state.scrollProgress - 5.5) / 0.5;
+    }
+
+    if (state7Opacity > 0) {
       // Linear gradient representation: draw top-to-bottom background quad
       let bgMat = Matrix3.projection(w, h);
       bgMat = Matrix3.translate(bgMat, cx, cy);
       bgMat = Matrix3.scale(bgMat, w, h);
       // Dark space color
-      this.drawSolidQuad(bgMat, [0.03, 0.02, 0.06, state6Opacity * 0.9]);
+      this.drawSolidQuad(bgMat, [0.03, 0.02, 0.06, state7Opacity * 0.9]);
 
       // Star particles
       for (let i = 0; i < 20; i++) {
@@ -635,14 +711,14 @@ export class Renderer {
         let starMat = Matrix3.projection(w, h);
         starMat = Matrix3.translate(starMat, starX, starY);
         starMat = Matrix3.scale(starMat, 2 * pulse, 2 * pulse);
-        this.drawSolidQuad(starMat, [1, 1, 1, state6Opacity * 0.8]);
+        this.drawSolidQuad(starMat, [1, 1, 1, state7Opacity * 0.8]);
       }
 
       // Golden horizon ellipse
       let horizonMat = Matrix3.projection(w, h);
       horizonMat = Matrix3.translate(horizonMat, cx, h * 0.9);
       horizonMat = Matrix3.scale(horizonMat, w * 1.4, h * 0.5);
-      this.drawQuad(this.whiteTexture, horizonMat, state6Opacity * 0.16, [1.0, 0.84, 0.0, state6Opacity * 0.16], 1.0, 0.5);
+      this.drawQuad(this.whiteTexture, horizonMat, state7Opacity * 0.16, [1.0, 0.84, 0.0, state7Opacity * 0.16], 1.0, 0.5);
 
       // Rotating Lens of Grace Grid
       for (let r = 0; r < 4; r++) {
@@ -658,7 +734,7 @@ export class Renderer {
             0, 0,
             maxR * Math.cos(angle), maxR * Math.sin(angle),
             0.5,
-            0.06 * state6Opacity,
+            0.06 * state7Opacity,
             [1.0, 0.99, 0.98, 1.0]
           );
         }
@@ -709,8 +785,8 @@ export class Renderer {
     this.gl.uniform1f(u_segments, 6.0); // 6-way symmetry
 
     // Set reflection center in normalized UV coordinates [0.0 to 1.0]
-    // In state < 3.5, center is rx = w * 0.74, so UV.x = 0.74
-    const uCenterX = state.scrollProgress < 3.5 ? 0.74 : 0.5;
+    // In state < 3.5 or state 6 (4.5 to 5.5), center is rx = w * 0.74, so UV.x = 0.74
+    const uCenterX = (state.scrollProgress < 3.5 || (state.scrollProgress > 4.5 && state.scrollProgress < 5.5)) ? 0.74 : 0.5;
     this.gl.uniform2f(u_center, uCenterX, 0.5);
 
     // Dynamic rotation offset driven by mouse position and scroll
@@ -718,8 +794,8 @@ export class Renderer {
     this.gl.uniform1f(u_angleOffset, angleRot);
 
     // Interpolated effect strengths based on scroll progress
-    this.gl.uniform1f(u_chromaticStrength, state.scrollProgress < 4.0 ? 0.4 : 1.2 * (state.scrollProgress - 3.8));
-    this.gl.uniform1f(u_distortionStrength, state.scrollProgress > 4.0 ? 0.15 * (state.scrollProgress - 4.0) : 0.0);
+    this.gl.uniform1f(u_chromaticStrength, state.scrollProgress < 5.0 ? 0.4 : 1.2 * (state.scrollProgress - 4.8));
+    this.gl.uniform1f(u_distortionStrength, state.scrollProgress > 5.0 ? 0.15 * (state.scrollProgress - 5.0) : 0.0);
     this.gl.uniform1f(u_noiseStrength, 0.5); // Constant film grain
     this.gl.uniform1f(u_vignetteStrength, 0.65); // Soft border vignette
 

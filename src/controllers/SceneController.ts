@@ -43,8 +43,8 @@ export class SceneController {
       this.state.mouseX = this.state.mouseX + (this.targetMouseX - this.state.mouseX) * 0.05;
       this.state.mouseY = this.state.mouseY + (this.targetMouseY - this.state.mouseY) * 0.05;
 
-      // Calculate active scene number: scrollProgress is 0.0 to 5.0, mapping to scene 1 to 6
-      const newScene = Math.min(6, Math.max(1, Math.floor(this.state.scrollProgress + 0.5) + 1));
+      // Calculate active scene number: scrollProgress is 0.0 to 6.0, mapping to scene 1 to 7
+      const newScene = Math.min(7, Math.max(1, Math.floor(this.state.scrollProgress + 0.5) + 1));
       if (newScene !== this.state.activeScene) {
         this.state.activeScene = newScene;
         this.onSceneChangeCallbacks.forEach(cb => cb(newScene));

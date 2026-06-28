@@ -1,6 +1,6 @@
 export interface SceneState {
-  scrollProgress: number;          // Normalised: 0.0 to 5.0
-  activeScene: number;             // Active State: 1 to 6
+  scrollProgress: number;          // Normalised: 0.0 to 6.0
+  activeScene: number;             // Active State: 1 to 7
   loading: boolean;                // Is preloader active
   loadProgress: number;            // Loading progress percentage (0.0 to 1.0)
   lightIntensity: number;          // Volumetric lighting multiplier

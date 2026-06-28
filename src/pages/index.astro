@@ -123,7 +123,7 @@ import ExhibitionText from '../components/ExhibitionText.astro';
 
         // Setup ticking functions for Progress HUD
         gsap.ticker.add(() => {
-          const progressFraction = sceneController.state.scrollProgress / 5.0;
+          const progressFraction = sceneController.state.scrollProgress / 6.0;
           const offset = circumference - progressFraction * circumference;
           hudCircle.style.strokeDashoffset = offset.toString();
         });
@@ -282,7 +282,7 @@ import ExhibitionText from '../components/ExhibitionText.astro';
   .scroll-container {
     position: relative;
     width: 100%;
-    height: 600vh; /* 6 state scrolls */
+    height: 700vh; /* 7 state scrolls */
     pointer-events: none;
     z-index: 2;
   }
